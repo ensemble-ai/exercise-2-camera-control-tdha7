@@ -1,14 +1,14 @@
 class_name FrameAutoscrollCamera
 extends CameraControllerBase
 
-@export var box_width:float = 10.0
-@export var box_height:float = 10.0
-# idk what I am supposed to do here for the variables
-@export var top_left:Vector2
-@export var bottom_right:Vector2
+@export var top_left:Vector2 = Vector2(-5.0, 5.0)
+@export var bottom_right:Vector2 = Vector2(5.0, -5.0)
 # only control x and z
 @export var autoscroll_speed:Vector3 = Vector3(0.1, 0.0, 0.0)
 
+var box_width = bottom_right.x - top_left.x
+var box_height = top_left.y - bottom_right.y
+	
 func _process(delta: float) -> void:
 	if !current:
 		return
