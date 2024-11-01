@@ -8,7 +8,11 @@ extends CameraControllerBase
 
 var box_width = bottom_right.x - top_left.x
 var box_height = top_left.y - bottom_right.y
-	
+
+func _ready() -> void:
+	super()
+	position = target.position
+
 func _process(delta: float) -> void:
 	if !current:
 		return
