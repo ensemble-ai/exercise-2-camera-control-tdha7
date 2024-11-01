@@ -20,6 +20,9 @@ func _process(_delta):
 		if len(cameras) < current_controller+1:
 			current_controller = 0
 		
+		# draw logic by default
+		cameras[current_controller].draw_camera_logic = true
+		
 		for index in len(cameras):
 			if null != cameras[index]:
 				if index == current_controller:

@@ -9,8 +9,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if !current:
 		return
-	#draw_camera_logic
-	if true:
+
+	if draw_camera_logic:
 		draw_logic()
 	
 	position = target.position

@@ -6,7 +6,8 @@ extends CameraControllerBase
 
 @export var follow_speed:float = 1.0
 @export var catchup_speed:float = 5.0
-@export var leash_distance:float = 10.0
+@export var leash_distance:float = 5.0
+
 
 func _ready() -> void:
 	super()
@@ -16,8 +17,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if !current:
 		return
-	#draw_camera_logic
-	if true:
+
+	if draw_camera_logic:
 		draw_logic()
 
 	var distance_to_target = Vector2(position.x, position.z).distance_to(Vector2(target.position.x, target.position.z))

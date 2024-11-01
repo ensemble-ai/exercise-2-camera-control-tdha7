@@ -4,19 +4,21 @@ extends CameraControllerBase
 @export var lead_speed:float = 2.0
 @export var catchup_delay_duration:float = 1.0
 @export var catchup_speed:float = 5.0
-@export var leash_distance:float = 10.0
+@export var leash_distance:float = 5.0
 
 var _timer : float = 0.0
+
 
 func _ready() -> void:
 	super()
 	position = target.position
 
+
 func _process(delta: float) -> void:
 	if !current:
 		return
-	#draw_camera_logic
-	if true:
+
+	if draw_camera_logic:
 		draw_logic()
 	
 	var tpos = Vector3(target.global_position.x, 0.0, target.global_position.z)

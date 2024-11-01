@@ -3,21 +3,22 @@ extends CameraControllerBase
 
 @export var top_left:Vector2 = Vector2(-5.0, 5.0)
 @export var bottom_right:Vector2 = Vector2(5.0, -5.0)
-# only control x and z
 @export var autoscroll_speed:Vector3 = Vector3(0.1, 0.0, 0.0)
 
-var box_width = bottom_right.x - top_left.x
-var box_height = top_left.y - bottom_right.y
+var _box_width = bottom_right.x - top_left.x
+var _box_height = top_left.y - bottom_right.y
+
 
 func _ready() -> void:
 	super()
 	position = target.position
 
+
 func _process(delta: float) -> void:
 	if !current:
 		return
-	# draw_camera_logic
-	if true:
+
+	if draw_camera_logic:
 		draw_logic()
 	
 	position += autoscroll_speed
@@ -25,10 +26,10 @@ func _process(delta: float) -> void:
 	# var tpos = target.global_position
 	var cpos = global_position
 	
-	var left_edge_box_position = cpos.x - box_width / 2.0
-	var right_edge_box_position = cpos.x + box_width / 2.0
-	var top_edge_box_position = cpos.z - box_height / 2.0
-	var bottom_edge_box_position = cpos.z + box_height / 2.0
+	var left_edge_box_position = cpos.x - _box_width / 2.0
+	var right_edge_box_position = cpos.x + _box_width / 2.0
+	var top_edge_box_position = cpos.z - _box_height / 2.0
+	var bottom_edge_box_position = cpos.z + _box_height / 2.0
 
 	if target.global_position.x - target.RADIUS < left_edge_box_position:
 		target.global_position.x = left_edge_box_position + target.RADIUS  
@@ -50,10 +51,10 @@ func draw_logic() -> void:
 	mesh_instance.mesh = immediate_mesh
 	mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	
-	var left:float = -box_width / 2
-	var right:float = box_width / 2
-	var top:float = -box_height / 2
-	var bottom:float = box_height / 2
+	var left:float = -_box_width / 2
+	var right:float = _box_width / 2
+	var top:float = -_box_height / 2
+	var bottom:float = _box_height / 2
 	
 	immediate_mesh.surface_begin(Mesh.PRIMITIVE_LINES, material)
 	immediate_mesh.surface_add_vertex(Vector3(right, 0, top))
