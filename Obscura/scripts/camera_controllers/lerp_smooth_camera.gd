@@ -1,13 +1,12 @@
 class_name LerpSmoothCamera
 extends CameraControllerBase
 
-@export var lead_speed:float = 2.5
+@export var lead_speed:float = 2.0
 @export var catchup_delay_duration:float = 1.0
 @export var catchup_speed:float = 5.0
 @export var leash_distance:float = 10.0
 
 var _timer : float = 0.0
-const SCALING_FACTOR = 0.07
 
 func _ready() -> void:
 	super()
@@ -19,23 +18,37 @@ func _process(delta: float) -> void:
 	#draw_camera_logic
 	if true:
 		draw_logic()
-
+	
+	var tpos = Vector3(target.global_position.x, 0.0, target.global_position.z)
+	var cpos = Vector3(global_position.x, 0.0, global_position.z)
+	var distance_to_target = tpos.distance_to(cpos)
+	var input_dir = Vector3(target.velocity.x, 0.0, target.velocity.z).normalized()
+	# calculates actual lead speed
+	var target_speed = sqrt(pow(target.velocity.x, 2) + pow(target.velocity.z, 2))
+	var real_lead_speed = lead_speed * target_speed
+	
 	if abs(target.velocity.x) > 0 or abs(target.velocity.z) > 0:
 		# reset timer
 		_timer = 0.0
-		var new_camera_position = target.position + target.velocity.normalized() * target.velocity.length() * SCALING_FACTOR * leash_distance
-		global_position = lerp(global_position, new_camera_position, lead_speed * delta) 
+
+		var new_cpos = cpos
+		
+		if distance_to_target - leash_distance <= 1:
+			new_cpos.x += input_dir.x * real_lead_speed * delta
+			new_cpos.z += input_dir.z * real_lead_speed * delta
+		else:
+			new_cpos += (tpos - cpos) + input_dir * leash_distance
+		# if outside of leash range, set cam position
+		if new_cpos.distance_to(tpos) > leash_distance:
+			new_cpos = tpos - (tpos - new_cpos).normalized() * leash_distance
+		global_position = new_cpos
 	else:
 		# start timer
 		_timer += delta
 		if _timer >= catchup_delay_duration:
-			global_position = lerp(global_position, target.position, catchup_speed * delta)
-	# fixes position to within leash
-	var tpos = Vector3(target.global_position.x, 0.0, target.global_position.z)
-	var cpos = Vector3(global_position.x, 0.0, global_position.z)
-	var distance_to_target = tpos.distance_to(cpos)
-	if distance_to_target - leash_distance > 0.0001:
-		global_position += (tpos - cpos).normalized() * (distance_to_target - leash_distance) 
+			global_position.x += (target.position.x - global_position.x) * catchup_speed * delta
+			global_position.z += (target.position.z - global_position.z) * catchup_speed * delta
+	
 	
 	super(delta)
 
